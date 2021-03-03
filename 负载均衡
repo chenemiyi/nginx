@@ -1,0 +1,32 @@
+轮询：
+
+
+upstream tomcats {
+    server 192.168.0.100:8080 weight=2 max_fails=3 fail_timeout=15;
+    
+    server 192.168.0.101:8080 down;
+
+    server 192.168.0.102:8080 backup;
+}
+
+
+max_fails：默认为1，超过最大次数后，在fail_timeout时间内，新的请求将不会分配给这台机器
+fail_timeout：默认为10秒。某台Server达到max_fails次失败请求后，在fail_timeout期间内，nginx会认为这台Server暂时不可用，不会将请求分配给它
+backup：备份机，所有服务器挂了之后才会生效
+max_conns：限制分配给某台Server处理的最大连接数量，超过这个数量，将不会分配新的连接给它（1.5.9之后的版本才有这个配置）
+upstream tomcats {
+    server 192.168.0.100:8080 max_conns=1000;
+}
+
+url_hash：
+
+
+1.7.2版本以后，url_hash模块已经集成到了nginx源码当中，之前的版本仍需要单独安装
+
+请求url的hash结果来分配请求，使每个url定向到同一个后端服务器，服务器做缓存时比较有效
+upstream tomcats {
+    server 192.168.0.100:8080;
+    server 192.168.0.101:8080;
+    server 192.168.0.102:8080;
+    hash $request_uri;
+}
