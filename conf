@@ -1,0 +1,9 @@
+Nginx 上配置单个 Worker 进程的最大连接数：# ulimit -n
+单个进程的连接数（文件描述符 fd），有上限（nofile）
+worker_connections 上限为 nofile
+
+Nginx 上配置 Worker 进程的数量：worker_processes
+
+1. Nginx 的最大连接数：Worker 进程数量 x 单个 Worker 进程的最大连接数
+2. Nginx 作为反向代理服务器时，能够服务的最大连接数：（Worker 进程数量 x 单个 Worker 进程的最大连接数）/ 2 ========= 建立 Client 的连接和后端 Web Server 的连接，占用 2 个连接
+
